@@ -5,6 +5,9 @@ Author	:	Matthias Neeracher
 Language	:	Metrowerks C++
 
 $Log: PerlAEUtils.h,v $
+Revision 1.5  2003/10/28 05:48:54  pudge
+Add #undef I_POLL for Panther
+
 Revision 1.4  2003/08/13 21:41:30  pudge
 undef DEBUG for the sake of gcc 3.3 (perl's DEBUG conflicts with Mac's)
 
@@ -24,6 +27,7 @@ Synchronized with MacPerl 5.1.4a1
 
 #ifndef MACOS_TRADITIONAL
 #undef Move
+#undef I_POLL
 #undef DEBUG
 #endif
 #include <AppleEvents.h>

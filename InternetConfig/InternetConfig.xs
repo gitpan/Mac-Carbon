@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/InternetConfig/InternetConfig.xs,v 1.4 2003/04/06 22:19:02 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/InternetConfig/InternetConfig.xs,v 1.5 2003/10/28 05:53:30 pudge Exp $
  *
  *    Copyright (c) 1995 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: InternetConfig.xs,v $
+ * Revision 1.5  2003/10/28 05:53:30  pudge
+ * Add Carbon compat. notes
+ *
  * Revision 1.4  2003/04/06 22:19:02  pudge
  * Port to Mac OS X/Mac::Carbon
  *
@@ -186,6 +189,8 @@ ICStop(inst)
 
 =item ICGeneralFindConfigFile INST
 
+B<Mac OS only.>
+
 It is illegal to call this routine inside a ICBegin/End pair.
 Call to configure this connection to IC.
 This routine acts as a more general replacement for
@@ -228,6 +233,8 @@ ICGeneralFindConfigFile(inst, search_prefs=1, can_create=0, ...)
 
 =item ICChooseConfig INST
 
+B<Mac OS only.>
+
 Requires IC 1.2.
 It is illegal to call this routine inside a ICBegin/End pair.
 Requests the user to choose a configuration, typically using some
@@ -253,6 +260,8 @@ ICChooseConfig(inst)
 #endif
 
 =item ICChooseNewConfig INST
+
+B<Mac OS only.>
 
 Requires IC 1.2.
 It is illegal to call this routine inside a ICBegin/End pair.
@@ -307,6 +316,8 @@ ICGetConfigName(inst, longname=0)
 	
 =item ICGetConfigReference INST
 
+B<Mac OS only.>
+
 Requires IC 1.2.
 You must specify a configuration before calling this routine.
 Returns a self-contained reference to the instance's current
@@ -336,6 +347,8 @@ ICGetConfigReference(inst)
 
 =item ICSetConfigReference INST, REF
 
+B<Mac OS only.>
+
 Requires IC 1.2.
 It is illegal to call this routine inside a ICBegin/End pair.
 Reconfigures the instance using a configuration reference that was
@@ -353,7 +366,7 @@ ICSetConfigReference(inst, ref, flags=0)
 	long		flags;
 	CODE:
 #ifndef MACOS_TRADITIONAL
-	croak("Usage: Mac::InternetConfig::ICGeneralFindConfigFile unsupported in Carbon");
+	croak("Usage: Mac::InternetConfig::ICSetConfigReference unsupported in Carbon");
 #else
 	RETVAL = ICSetConfigReference(inst, (ICConfigRefHandle) ref, flags);
 #endif
@@ -381,6 +394,8 @@ ICGetSeed(inst)
 	RETVAL
 
 =item ICGetComponentInstance INST
+
+B<Mac OS only.>
 
 Requires IC 1.2.
 You do not have to specify a configuration before calling this routine.

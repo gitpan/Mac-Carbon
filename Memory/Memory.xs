@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Memory.xs,v $
+ * Revision 1.11  2003/10/28 05:53:30  pudge
+ * Add Carbon compat. notes
+ *
  * Revision 1.10  2003/08/13 21:42:51  pudge
  * Spelling
  *
@@ -427,6 +430,8 @@ MODULE = Mac::Memory	PACKAGE = Mac::Memory
 
 =item GetApplLimit
 
+B<Mac OS only.>
+
 The GetApplLimit function returns the current application heap limit.
 
 
@@ -463,6 +468,8 @@ TopMem()
 =item NewHandleClear BYTECOUNT
 
 =item NewHandleSysClear BYTECOUNT
+
+B<Mac OS only.> (NewHandleSys, NewHandleSysClear)
 
 Return a handle of $BYTECOUNT size.
 
@@ -520,9 +527,13 @@ NewHandleSysClear(byteCount)
 
 =item NewPtrSys BYTECOUNT
 
+B<Mac OS only.>
+
 =item NewPtrClear BYTECOUNT
 
 =item NewPtrSysClear BYTECOUNT
+
+B<Mac OS only.> (NewPtrSys, NewPtrSysClear)
 
 Allocate a nonrelocatable block of memory of a specified size.
 
@@ -584,6 +595,8 @@ NewPtrSysClear(byteCount)
 
 =item MaxBlockSys
 
+B<Mac OS only.> (MaxBlockSys)
+
 The MaxBlock function returns the maximum contiguous space, in bytes, that you
 could obtain after compacting the current heap zone. MaxBlock does not actually
 do the compaction.
@@ -623,6 +636,8 @@ StackSpace()
 =item NewEmptyHandle
 
 =item NewEmptyHandleSys
+
+B<Mac OS only.> (NewEmptyHandleSys)
 
 The NewEmptyHandle function initializes a new handle by allocating a master
 pointer for it, but it does not allocate any memory for the handle to control.
@@ -778,6 +793,8 @@ TempFreeMem()
 
 =item CompactMemSys BYTECOUNT
 
+B<Mac OS only.> (CompactMemSys)
+
 The CompactMem function compacts the current heap zone by moving unlocked,
 relocatable blocks down until they encounter nonrelocatable blocks or locked,
 relocatable blocks, but not by purging blocks. It continues compacting until it
@@ -815,6 +832,8 @@ CompactMemSys(cbNeeded)
 =item PurgeMem BYTECOUNT
 
 =item PurgeMemSys BYTECOUNT
+
+B<Mac OS only.> (PurgeMemSys)
 
 The PurgeMem procedure sequentially purges blocks from the current heap zone
 until it either allocates a contiguous block of at least $BYTECOUNT free bytes or
@@ -855,6 +874,8 @@ PurgeMemSys(cbNeeded)
 
 =item FreeMemSys
 
+B<Mac OS only.> (FreeMemSys)
+
 The FreeMem function returns the total amount of free space (in bytes) in the
 current heap zone. Note that it usually isn't possible to allocate a block of
 that size, because of heap fragmentation due to nonrelocatable or locked blocks.
@@ -883,6 +904,8 @@ FreeMemSys()
 =item ReserveMem BYTECOUNT
 
 =item ReserveMemSys BYTECOUNT
+
+B<Mac OS only.> (ReserveMemSys)
 
 The ReserveMem procedure attempts to create free space for a block of $BYTECOUNT
 contiguous logical bytes at the lowest possible position in the current heap
@@ -917,6 +940,8 @@ ReserveMemSys(cbNeeded)
 =item MaxMem
 
 =item MaxMemSys
+
+B<Mac OS only.> (MaxMemSys)
 
 Use the MaxMem function to compact and purge the current heap zone. The values
 returned are the amount of memory available and the amount by which the zone can

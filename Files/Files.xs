@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Files/Files.xs,v 1.8 2003/04/06 21:29:07 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Files/Files.xs,v 1.9 2003/10/28 05:53:30 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Files.xs,v $
+ * Revision 1.9  2003/10/28 05:53:30  pudge
+ * Add Carbon compat. notes
+ *
  * Revision 1.8  2003/04/06 21:29:07  pudge
  * Fix two-arg FSpGetCatInfo(FILE, INDEX) form
  *
@@ -649,6 +652,8 @@ _UnmountVol(volName, vRefNum)
 	RETVAL
 
 =item Eject (VOLUMENAME | VOLUMENR)
+
+B<Mac OS only.>
 
 Ejects a volume, placing it offline.
 

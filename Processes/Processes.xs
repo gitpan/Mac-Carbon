@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.8 2003/04/06 21:34:08 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.9 2003/10/28 05:53:30 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Processes.xs,v $
+ * Revision 1.9  2003/10/28 05:53:30  pudge
+ * Add Carbon compat. notes
+ *
  * Revision 1.8  2003/04/06 21:34:08  pudge
  * Add LSFindApplicationForInfo to Mac::Processes for finding
  * applications on Mac OS X (by creator, bundle ID, or name)
@@ -205,6 +208,8 @@ LaunchApplication(LaunchParams)
 
 =item LaunchDeskAccessory PFILESPEC, PDANAME
 
+B<Mac OS only.>
+
 The LaunchDeskAccessory function searches the resource fork of the file specified
 by the pFileSpec parameter for the desk accessory with the 'DRVR' resource name
 specified in the pDAName parameter. If the 'DRVR' resource name is found,
@@ -365,8 +370,9 @@ ExitToShell()
 
 =item GetProcessPID(PSN)
 
+B<Mac OS X only.>
+
 Get the UNIX process ID corresponding to a process serial number.
-Mac OS X only.
 
 =cut
 pid_t
@@ -374,7 +380,7 @@ GetProcessPID(PSN)
 	ProcessSerialNumber	PSN
 	CODE:
 #ifdef MACOS_TRADITIONAL
-	croak("Usage: Mac::Processes::GetProcessPID not supported in Mac OS");
+	croak("Usage: Mac::Processes::GetProcessPID unsupported in Mac OS");
 #else
 	if (gMacPerl_OSErr = GetProcessPID(&PSN, &RETVAL)) {
 		XSRETURN_UNDEF;
@@ -385,8 +391,9 @@ GetProcessPID(PSN)
 
 =item GetProcessForPID(PID)
 
+B<Mac OS X only.>
+
 Get the process serial number corresponding to a UNIX process ID.
-Mac OS X only.
 
 =cut
 ProcessSerialNumber
@@ -394,7 +401,7 @@ GetProcessForPID(PID)
 	pid_t	PID
 	CODE:
 #ifdef MACOS_TRADITIONAL
-	croak("Usage: Mac::Processes::GetProcessForPID not supported in Mac OS");
+	croak("Usage: Mac::Processes::GetProcessForPID unsupported in Mac OS");
 #else
 	if (gMacPerl_OSErr = GetProcessForPID(PID, &RETVAL)) {
 		XSRETURN_UNDEF;
@@ -404,6 +411,8 @@ GetProcessForPID(PID)
 	RETVAL
 
 =item LSFindApplicationForInfo(creator, bundleID=NULL, name=NULL)
+
+B<Mac OS X only.>
 
 Return the path to the application matching one or more of creator,
 bundleID, and name.  Pass undef or empty string for unused parameters.
@@ -428,7 +437,7 @@ LSFindApplicationForInfo(creator, bundleID=NULL, name=NULL)
 		name = NULL;
 	CODE:
 #ifdef MACOS_TRADITIONAL
-	croak("Usage: Mac::Processes::LSFindApplicationForInfo not supported in Mac OS");
+	croak("Usage: Mac::Processes::LSFindApplicationForInfo unsupported in Mac OS");
 #else
 	gMacPerl_OSErr = LSFindApplicationForInfo(creator, bundleID, name, &RETVAL, NULL);
 #endif
