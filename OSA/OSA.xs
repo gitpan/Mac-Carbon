@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/OSA/OSA.xs,v 1.3 2002/12/10 02:12:06 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/OSA/OSA.xs,v 1.5 2003/06/25 04:37:50 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,12 @@
  *    as specified in the README file.
  *
  * $Log: OSA.xs,v $
+ * Revision 1.5  2003/06/25 04:37:50  pudge
+ * OK, a better solution
+ *
+ * Revision 1.4  2003/06/25 02:22:21  pudge
+ * Fix OSADoEvent, bump version
+ *
  * Revision 1.3  2002/12/10 02:12:06  pudge
  * Add Carbon support
  *
@@ -580,6 +586,7 @@ OSADoEvent(scriptingComponent, theAppleEvent, contextID, modeFlags)
 	OSAID 				contextID
 	long 					modeFlags
 	CODE:
+	AECreateAppleEvent(NULL, NULL, NULL, NULL, NULL, &RETVAL);
 	if (gMacPerl_OSErr = (short) OSADoEvent(scriptingComponent, &theAppleEvent, contextID, modeFlags, &RETVAL)) {
 		XSRETURN_UNDEF;
 	}
