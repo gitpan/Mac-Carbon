@@ -15,7 +15,7 @@ use base 'DynaLoader';
 use base 'Exporter';
 use vars qw(@EXPORT %EXPORT_TAGS $VERSION);
 
-$VERSION = '1.06';
+$VERSION = '1.07';
 @EXPORT = qw(
 	FSpGetCatInfo
 	FSpSetCatInfo
@@ -1597,15 +1597,20 @@ sub UnmountVol 	{	_UnmountVol(&_VolumeID);	}
 sub Eject	{	_Eject     (&_VolumeID);	}
 sub FlushVol 	{	_FlushVol  (&_VolumeID);	}
 
-#if ($^O ne 'MacOS') {
-#	*NAMFFP = *NewAliasMinimalFromFullPath{CODE};
-#	no strict 'refs';
-#	no warnings 'redefine'; 
-#	require Mac::Path::Util;
-#	*NewAliasMinimalFromFullPath = sub {
-#		NAMFFP(Mac::Path::Util->new($_[0])->mac_path);
-#	}
-#}
+# we try to convert the path to an HFS-style path because
+# NewAliasMinimalFromFullPath only works with HFS-style paths
+# ... or in the future we could try FSNewAliasMinmalUnicode,
+# but that will only work if the directory underneath works ...
+# plus we need to convert to Unicode ... bleah
+if ($^O ne 'MacOS') {
+	*NAMFFP = *NewAliasMinimalFromFullPath{CODE};
+	no strict 'refs';
+	no warnings 'redefine'; 
+	require Mac::Path::Util;
+	*NewAliasMinimalFromFullPath = sub {
+		NAMFFP(Mac::Path::Util->new($_[0], Mac::Path::Util::DARWIN())->mac_path);
+	}
+}
 
 =include Files.xs
 
