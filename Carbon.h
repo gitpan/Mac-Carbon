@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.9 2003/04/07 01:25:31 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.10 2003/08/13 21:41:30 pudge Exp $
  *
  *    Copyright (c) 2002 Matthias Neeracher, Chris Nandor
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Carbon.h,v $
+ * Revision 1.10  2003/08/13 21:41:30  pudge
+ * undef DEBUG for the sake of gcc 3.3 (perl's DEBUG conflicts with Mac's)
+ *
  * Revision 1.9  2003/04/07 01:25:31  pudge
  * Handle directory case
  *
@@ -44,6 +47,7 @@
 
 /* Perl defines Move too */
 #undef Move
+#undef DEBUG
 #include <Events.h>
 #include <Dialogs.h>
 #include <Files.h>
