@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Speech/Speech.xs,v 1.3 2002/11/13 02:04:53 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Speech/Speech.xs,v 1.4 2002/12/19 17:45:53 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,11 @@
  *    as specified in the README file.
  *
  * $Log: Speech.xs,v $
+ * Revision 1.4  2002/12/19 17:45:53  pudge
+ * GetVoiceDesciption and NewSpeechChannel use default voice if no parameter given
+ * %Voice hash returns default voice if key is false (undef, '', 0)
+ * Added accessor methods for VoiceDescription and VoiceSpec structures
+ *
  * Revision 1.3  2002/11/13 02:04:53  pudge
  * Aieeeeee!  Big ol' Carbon update.
  *
@@ -141,6 +146,53 @@ extern pascal OSErr UseDictionary(SpeechChannel chan, Handle dictionary)
 
 MODULE = Mac::Speech	PACKAGE = Mac::Speech
 
+=head2 Types
+
+=over 4
+
+=item VoiceDescription
+
+Voice Description Record.
+
+	long        length              size of structure--set by application
+	VoiceSpec   voice               voice synthesizer and ID info
+	long        version             version number of voice
+	Str63       name                name of voice
+	Str255      comment             text information about voice
+	short       gender              neuter, male, or female
+	short       age                 approximate age in years
+	short       script              script code of text voice can process
+	short       language            language code of voice output
+	short       region              region code of voice output
+
+=cut
+STRUCT VoiceDescription
+	long        length;              /*size of structure--set by application*/
+	VoiceSpec   voice;               /*voice synthesizer and ID info*/
+	long        version;             /*version number of voice*/
+	Str63       name;                /*name of voice*/
+	Str255      comment;             /*text information about voice*/
+	short       gender;              /*neuter, male, or female*/
+	short       age;                 /*approximate age in years*/
+	short       script;              /*script code of text voice can process*/
+	short       language;            /*language code of voice output*/
+	short       region;              /*region code of voice output*/
+
+=item VoiceSpec
+
+Voice Specification Record.
+
+	OSType      creator             ID of required synthesizer
+	OSType      id                  ID of voice on the synthesizer
+
+
+=cut
+STRUCT VoiceSpec
+	OSType      creator;             /*ID of required synthesizer*/
+	OSType      id;                  /*ID of voice on the synthesizer*/
+
+=back
+
 =head2 Functions
 
 =over 4
@@ -179,10 +231,13 @@ GetIndVoice(index)
 
 =cut
 VoiceDescription
-GetVoiceDescription(voice)
+GetVoiceDescription(voice=NO_INIT)
 	VoiceSpec &voice
 	CODE:
-	SpeechFail(GetVoiceDescription(&voice, &RETVAL, sizeof(RETVAL)));
+	if (items >= 1)
+		SpeechFail(GetVoiceDescription(&voice, &RETVAL, sizeof(RETVAL)));
+	else
+		SpeechFail(GetVoiceDescription(NULL, &RETVAL, sizeof(RETVAL)));
 	OUTPUT:
 	RETVAL
 
@@ -191,10 +246,13 @@ GetVoiceDescription(voice)
 
 =cut
 SpeechChannel
-NewSpeechChannel(voice)
+NewSpeechChannel(voice=NO_INIT)
 	VoiceSpec &voice
 	CODE:
-	SpeechFail(NewSpeechChannel(&voice, &RETVAL));
+	if (items >= 1)
+		SpeechFail(NewSpeechChannel(&voice, &RETVAL));
+	else
+		SpeechFail(NewSpeechChannel(NULL, &RETVAL));
 	OUTPUT:
 	RETVAL
 
