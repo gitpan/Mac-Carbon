@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/AppleEvents/AppleEvents.xs,v 1.9 2003/10/28 05:53:58 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/AppleEvents/AppleEvents.xs,v 1.11 2004/05/11 05:36:18 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,13 @@
  *    as specified in the README file.
  *
  * $Log: AppleEvents.xs,v $
+ * Revision 1.11  2004/05/11 05:36:18  pudge
+ * oops
+ *
+ * Revision 1.10  2004/05/11 05:28:26  pudge
+ * Eliminate a number of memory leaks due to lack of disposal of Handles,
+ * due to changes for Mac OS X.
+ *
  * Revision 1.9  2003/10/28 05:53:58  pudge
  * Add Carbon compat. notes; revert to AESend for AESend instead of AESendMessage
  *
@@ -84,6 +91,7 @@ _new(package, type='null', data=0)
 			AEFail(AECreateDesc(type, NULL, 0, &RETVAL));
 		} else {
 			AEFail(AECreateDesc(type, *data, GetHandleSize(data), &RETVAL));
+			DisposeHandle(data);
 		}
 #endif
 	}
@@ -96,7 +104,7 @@ type(desc, newType=0)
 	OSType	newType
 	CODE:
 	{
-		if (items>1)
+		if (items > 1)
 			desc.descriptorType	=	newType;
 		RETVAL = desc.descriptorType;
 	}
@@ -111,22 +119,23 @@ data(desc, newData=0)
 	CODE:
 	{
 #ifdef MACOS_TRADITIONAL
-		if (items>1)
+		if (items > 1) {
+			DisposeHandle(desc.dataHandle);
 			desc.dataHandle	=	newData;
+		}
 		RETVAL = desc.dataHandle;
 #else
-		Ptr  descData;
 		Size descLen;
 
 		if (items>1) {
 			AEReplaceDescData(desc.descriptorType, *newData,
 				GetHandleSize(newData), &desc);
+			DisposeHandle(newData);
 		}
 
 		descLen = AEGetDescDataSize(&desc);
-		descData = NewPtr(descLen);
-		AEFail(AEGetDescData(&desc, descData, descLen));
-		PtrToHand(descData, &RETVAL, descLen);
+		RETVAL = NewHandle(descLen);
+		AEFail(AEGetDescData(&desc, *RETVAL, descLen));
 #endif
 	}
 	OUTPUT:
@@ -152,6 +161,7 @@ _new(package, key=0, type='null', data=0)
 			AEFail(AECreateDesc(type, NULL, 0, &RETVAL.descContent));
 		} else {
 			AEFail(AECreateDesc(type, *data, GetHandleSize(data), &RETVAL.descContent));
+			DisposeHandle(data);
 		}
 #endif
 	}
@@ -197,7 +207,6 @@ data(desc, newData=0)
 			desc.descContent.dataHandle	=	newData;
 		RETVAL = desc.descContent.dataHandle;
 #else
-		Ptr  descData;
 		Size descLen;
 
 		if (items>1) {
@@ -206,9 +215,8 @@ data(desc, newData=0)
 		}
 
 		descLen = AEGetDescDataSize(&desc.descContent);
-		descData = NewPtr(descLen);
-		AEFail(AEGetDescData(&desc.descContent, descData, descLen));
-		PtrToHand(descData, &RETVAL, descLen);
+		RETVAL = NewHandle(descLen);
+		AEFail(AEGetDescData(&desc.descContent, *RETVAL, descLen));
 #endif
 	}
 	OUTPUT:
@@ -235,9 +243,9 @@ AECreateDesc(typeCode, data)
 	{
 		void *	dataPtr;
 		STRLEN	dataSize;
-		
+
 		dataPtr = SvPV(data, dataSize);
-		
+
 		AEFail(AECreateDesc(typeCode, dataPtr, dataSize, &RETVAL));
 	}
 	OUTPUT:
@@ -980,14 +988,14 @@ AEPrint(desc)
 	AEDesc	&desc
 	CODE:
 	{
-		long		length;
 #ifndef MACOS_TRADITIONAL
 		Handle	hand;
 
-		AEPrintDescToHandle(&desc, &hand);
-		length = GetHandleSize(hand);
-		RETVAL = newSVpv(*hand, length);
+		AEFail(AEPrintDescToHandle(&desc, &hand));
+		RETVAL = newSVpv(*hand, GetHandleSize(hand));
+		DisposeHandle(hand);
 #else
+		long		length;
 		
 		AEFail(AEPrintSize(&desc, &length));
 		RETVAL = newSVpv("", length);
