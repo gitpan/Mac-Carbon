@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/AppleEvents/AppleEvents.xs,v 1.7 2002/12/17 16:16:07 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/AppleEvents/AppleEvents.xs,v 1.8 2003/04/06 21:16:51 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: AppleEvents.xs,v $
+ * Revision 1.8  2003/04/06 21:16:51  pudge
+ * Fix segfault for NULL descriptor in new AEDesc
+ *
  * Revision 1.7  2002/12/17 16:16:07  pudge
  * Use new constant
  *
@@ -74,7 +77,11 @@ _new(package, type='null', data=0)
 		RETVAL.descriptorType	=	type;
 		RETVAL.dataHandle			=	data;
 #else
-		AEFail(AECreateDesc(type, *data, GetHandleSize(data), &RETVAL));
+		if (data == NULL) {
+			AEFail(AECreateDesc(type, NULL, 0, &RETVAL));
+		} else {
+			AEFail(AECreateDesc(type, *data, GetHandleSize(data), &RETVAL));
+		}
 #endif
 	}
 	OUTPUT:
@@ -138,7 +145,11 @@ _new(package, key=0, type='null', data=0)
 		RETVAL.descContent.descriptorType	=	type;
 		RETVAL.descContent.dataHandle			=	data;
 #else
-		AEFail(AECreateDesc(type, *data, GetHandleSize(data), &RETVAL.descContent));
+		if (data == NULL) {
+			AEFail(AECreateDesc(type, NULL, 0, &RETVAL.descContent));
+		} else {
+			AEFail(AECreateDesc(type, *data, GetHandleSize(data), &RETVAL.descContent));
+		}
 #endif
 	}
 	OUTPUT:

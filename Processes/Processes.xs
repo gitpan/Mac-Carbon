@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.7 2002/12/12 14:58:07 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.8 2003/04/06 21:34:08 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,10 @@
  *    as specified in the README file.
  *
  * $Log: Processes.xs,v $
+ * Revision 1.8  2003/04/06 21:34:08  pudge
+ * Add LSFindApplicationForInfo to Mac::Processes for finding
+ * applications on Mac OS X (by creator, bundle ID, or name)
+ *
  * Revision 1.7  2002/12/12 14:58:07  pudge
  * Update POD and docs
  *
@@ -370,7 +374,7 @@ GetProcessPID(PSN)
 	ProcessSerialNumber	PSN
 	CODE:
 #ifdef MACOS_TRADITIONAL
-	croak("Usage: Mac::Processes::GetProcessPID supported in Mac OS X only");
+	croak("Usage: Mac::Processes::GetProcessPID not supported in Mac OS");
 #else
 	if (gMacPerl_OSErr = GetProcessPID(&PSN, &RETVAL)) {
 		XSRETURN_UNDEF;
@@ -390,7 +394,7 @@ GetProcessForPID(PID)
 	pid_t	PID
 	CODE:
 #ifdef MACOS_TRADITIONAL
-	croak("Usage: Mac::Processes::GetProcessForPID supported in Mac OS X only");
+	croak("Usage: Mac::Processes::GetProcessForPID not supported in Mac OS");
 #else
 	if (gMacPerl_OSErr = GetProcessForPID(PID, &RETVAL)) {
 		XSRETURN_UNDEF;
@@ -398,6 +402,39 @@ GetProcessForPID(PID)
 #endif
 	OUTPUT:
 	RETVAL
+
+=item LSFindApplicationForInfo(creator, bundleID=NULL, name=NULL)
+
+Return the path to the application matching one or more of creator,
+bundleID, and name.  Pass undef or empty string for unused parameters.
+
+	$path = LSFindApplicationForInfo("R*ch");
+	$path = LSFindApplicationForInfo(undef, "com.barebones.bbedit");
+	$path = LSFindApplicationForInfo(undef, undef, "BBEdit.app");
+	$path = LSFindApplicationForInfo("R*ch", "com.barebones.bbedit", "BBEdit.app");
+
+=cut
+FSRef
+LSFindApplicationForInfo(creator, bundleID=NULL, name=NULL)
+	OSType		creator
+	CFStringRef	bundleID
+	CFStringRef	name
+	INIT:
+	if (strlen(SvPV_nolen(ST(0))) == 0)
+		creator = NULL;
+	if (bundleID != NULL && CFStringGetLength(bundleID) == 0)
+		bundleID = NULL;
+	if (name != NULL && CFStringGetLength(name) == 0)
+		name = NULL;
+	CODE:
+#ifdef MACOS_TRADITIONAL
+	croak("Usage: Mac::Processes::LSFindApplicationForInfo not supported in Mac OS");
+#else
+	gMacPerl_OSErr = LSFindApplicationForInfo(creator, bundleID, name, &RETVAL, NULL);
+#endif
+	OUTPUT:
+	RETVAL
+
 
 =back
 

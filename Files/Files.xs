@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Files/Files.xs,v 1.7 2002/12/12 14:57:29 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Files/Files.xs,v 1.8 2003/04/06 21:29:07 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Files.xs,v $
+ * Revision 1.8  2003/04/06 21:29:07  pudge
+ * Fix two-arg FSpGetCatInfo(FILE, INDEX) form
+ *
  * Revision 1.7  2002/12/12 14:57:29  pudge
  * Update POD and docs
  *
@@ -293,7 +296,7 @@ FSpGetCatInfo(file, index=0)
 	FSSpec	file
 	short		index
 	CODE:
-	if ((index && GUSIFSpUp(&file)) || !(RETVAL = NewCatInfo())) {
+	if ((index && GUSIFSpDown(&file, "\p")) || !(RETVAL = NewCatInfo())) {
 		XSRETURN_UNDEF;
 	}
 	RETVAL->hFileInfo.ioVRefNum 	= file.vRefNum;
@@ -696,7 +699,7 @@ FindFolder(vRefNum, folderType, createFolder=0)
 	GUSIFSpUp(&RETVAL);
 	OUTPUT:
 	RETVAL
- 
+
 =back
- 
+
 =cut
