@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.1 2002/11/13 02:04:50 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.3 2002/12/10 01:47:17 pudge Exp $
  *
  *    Copyright (c) 2002 Matthias Neeracher, Chris Nandor
  *
@@ -6,6 +6,12 @@
  *    as specified in the README file.
  *
  * $Log: Carbon.h,v $
+ * Revision 1.3  2002/12/10 01:47:17  pudge
+ * Some cleanup, and add idle proc, which we don't actually use
+ *
+ * Revision 1.2  2002/11/14 12:47:58  pudge
+ * Cast errno to short
+ *
  * Revision 1.1  2002/11/13 02:04:50  pudge
  * Aieeeeee!  Big ol' Carbon update.
  *
@@ -51,7 +57,7 @@ typedef Ptr	PtrRet;
 #include <errno.h>
 
 /* $! and $^E will both be set together, which is fine (for now?) */
-#define gMacPerl_OSErr errno
+#define gMacPerl_OSErr (short)errno
 
 /* c string to pascal string */
 static StringPtr MacPerl_CopyC2P(const char * c, StringPtr p)
@@ -132,7 +138,7 @@ static UInt32 SecondsUnix2Mac(UInt32 unixseconds)
 static char * GUSIFSp2FullPath(const FSSpec * spec)
 {
 	FSRef		ref;
-	UInt8 *		path     = NewPtr(2*PATH_MAX); // to be safe
+	UInt8 *		path     = (UInt8 *)NewPtr(2*PATH_MAX); // to be safe
 	UInt32		pathSize = 2*PATH_MAX;
 
 	if ( (gMacPerl_OSErr = FSpMakeFSRef(spec, &ref)) ) { // && (gMacPerl_OSErr != fnfErr) )
@@ -142,7 +148,7 @@ static char * GUSIFSp2FullPath(const FSSpec * spec)
 	if (gMacPerl_OSErr = FSRefMakePath(&ref, path, pathSize))
 		return "";
 
-	return path;
+	return (char *)path;
 }
 
 /* Returns FSSpec from POSIX-style path, relative or absolute */
@@ -268,6 +274,27 @@ static void fgetfileinfo(char * path, OSType * creator, OSType * type)
 	}
 	DisposePtr((char *)spec);
 }
+
+/* Maybe we'll have use for this again? *
+* 
+* static pascal Boolean SubLaunchIdle(EventRecord * ev, long * sleep, RgnHandle * rgn)
+* {
+* 	// printf("%d : %d : %d : %d\n", kHighLevelEvent, ev->what, sleep, rgn);
+* 	switch (ev->what) {
+* 		case kHighLevelEvent:
+* 			AEProcessAppleEvent(ev);
+* 			return true;
+* 		default:
+* 			break;
+* 	}		
+* 
+* 	*sleep = 0;
+* 	rgn = nil;
+* 	return false;
+* }
+*/
+
+//#define uSubLaunchIdle *(AEIdleUPP)&SubLaunchIdle
 
 #  endif /* MACOS_TRADITIONAL */
 

@@ -7,7 +7,7 @@
  */
 
 #line 1 "Processes.xs"
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.5 2002/11/13 02:04:52 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.6 2002/12/10 01:50:57 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -15,6 +15,10 @@
  *    as specified in the README file.
  *
  * $Log: Processes.xs,v $
+ * Revision 1.6  2002/12/10 01:50:57  pudge
+ * Add GetProcessPID and GetProcessForPID, for mapping between Mac OS PSN
+ * and Unix PID.
+ *
  * Revision 1.5  2002/11/13 02:04:52  pudge
  * Aieeeeee!  Big ol' Carbon update.
  *
@@ -67,7 +71,7 @@ static ProcessInfo NewProcessInfo()
 	return pi;
 }
 
-#line 71 "Processes.c"
+#line 75 "Processes.c"
 XS(XS_LaunchParam_LaunchParam)
 {
     dXSARGS;
@@ -78,7 +82,7 @@ XS(XS_LaunchParam_LaunchParam)
     {
 	LaunchParam STRUCT;
 
-#line 79 "Processes.xs"
+#line 83 "Processes.xs"
 	 STRUCT;
 
 	if (sv_derived_from( ST(0), "LaunchParam")) {
@@ -90,43 +94,43 @@ XS(XS_LaunchParam_LaunchParam)
 	if (items == 1) { /* Get field */
 	    switch (ix) {
 	    case 0:	  /* launchFileFlags */
-#line 80 "Processes.xs"
+#line 84 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->launchFileFlags));
 		break;
 	    case 1:	  /* launchControlFlags */
-#line 81 "Processes.xs"
+#line 85 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->launchControlFlags));
 		break;
 	    case 2:	  /* launchAppSpec */
-#line 82 "Processes.xs"
+#line 86 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setpv(*sp, GUSIFSp2FullPath((STRUCT->launchAppSpec)));
 		break;
 	    case 3:	  /* launchProcessSN */
-#line 83 "Processes.xs"
+#line 87 "Processes.xs"
 	++sp;
 	*sp = newSVnv((STRUCT->launchProcessSN).highLongOfPSN * 4294967296.0 + (STRUCT->launchProcessSN).lowLongOfPSN);	
 	sv_2mortal(*sp);
 		break;
 	    case 4:	  /* launchPreferredSize */
-#line 84 "Processes.xs"
+#line 88 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->launchPreferredSize));
 		break;
 	    case 5:	  /* launchMinimumSize */
-#line 85 "Processes.xs"
+#line 89 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->launchMinimumSize));
 		break;
 	    case 6:	  /* launchAvailableSize */
-#line 86 "Processes.xs"
+#line 90 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->launchAvailableSize));
@@ -135,21 +139,21 @@ XS(XS_LaunchParam_LaunchParam)
 	} else { 	   /* Set field */
 	    switch (ix) {
 	    case 0:	  /* launchFileFlags */
-#line 80 "Processes.xs"
+#line 84 "Processes.xs"
 	 STRUCT->launchFileFlags = (unsigned short)SvUV( ST(1));
 		break;
 	    case 1:	  /* launchControlFlags */
-#line 81 "Processes.xs"
+#line 85 "Processes.xs"
 	 STRUCT->launchControlFlags = (unsigned short)SvUV( ST(1));
 		break;
 	    case 2:	  /* launchAppSpec */
-#line 82 "Processes.xs"
+#line 86 "Processes.xs"
 	 STRUCT->launchAppSpec;
 
 	GUSIPath2FSp((char *) SvPV_nolen( ST(1)),  STRUCT->launchAppSpec);
 		break;
 	    case 3:	  /* launchProcessSN */
-#line 83 "Processes.xs"
+#line 87 "Processes.xs"
 	 STRUCT->launchProcessSN;
 
 	{
@@ -161,19 +165,19 @@ XS(XS_LaunchParam_LaunchParam)
 	};
 		break;
 	    case 4:	  /* launchPreferredSize */
-#line 84 "Processes.xs"
+#line 88 "Processes.xs"
 	 STRUCT->launchPreferredSize = (unsigned long)SvUV( ST(1));
 		break;
 	    case 5:	  /* launchMinimumSize */
-#line 85 "Processes.xs"
+#line 89 "Processes.xs"
 	 STRUCT->launchMinimumSize = (unsigned long)SvUV( ST(1));
 		break;
 	    case 6:	  /* launchAvailableSize */
-#line 86 "Processes.xs"
+#line 90 "Processes.xs"
 	 STRUCT->launchAvailableSize = (unsigned long)SvUV( ST(1));
 		break;
 	    }
-#line 79 "Processes.xs"
+#line 83 "Processes.xs"
 	}
     }
     XSRETURN(1);
@@ -186,13 +190,13 @@ XS(XS_LaunchParam__new)
 	Perl_croak(aTHX_ "Usage: LaunchParam::_new()");
     {
 	LaunchParam	RETVAL;
-#line 99 "Processes.xs"
+#line 103 "Processes.xs"
 	RETVAL = (LaunchParam) malloc(sizeof(LaunchParamBlockRec)+sizeof(FSSpec));
 	RETVAL->launchBlockID			=	extendedBlock;
 	RETVAL->launchEPBLength			=	extendedBlockLen;
 	RETVAL->launchAppSpec			=	(FSSpecPtr)((char *)RETVAL+sizeof(LaunchParamBlockRec));
 	RETVAL->launchAppParameters	=	nil;
-#line 196 "Processes.c"
+#line 200 "Processes.c"
 	ST(0) = sv_newmortal();
 	sv_setref_pv(ST(0), "LaunchParam", (void*)RETVAL);
     }
@@ -213,9 +217,9 @@ XS(XS_LaunchParam_DESTROY)
 	}
 	else
 	    croak("lpb is not a reference");
-#line 114 "Processes.xs"
+#line 118 "Processes.xs"
 	free(lpb);
-#line 219 "Processes.c"
+#line 223 "Processes.c"
     }
     XSRETURN_EMPTY;
 }
@@ -230,7 +234,7 @@ XS(XS_ProcessInfo_ProcessInfo)
     {
 	ProcessInfo STRUCT;
 
-#line 139 "Processes.xs"
+#line 143 "Processes.xs"
 	 STRUCT;
 
 	if (SvROK( ST(0))) {
@@ -242,73 +246,73 @@ XS(XS_ProcessInfo_ProcessInfo)
 	if (items == 1) { /* Get field */
 	    switch (ix) {
 	    case 0:	  /* processName */
-#line 140 "Processes.xs"
+#line 144 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setpvn(*sp, ((char *) (STRUCT->processName)) + 1, (STRUCT->processName)[0]);
 		break;
 	    case 1:	  /* processNumber */
-#line 141 "Processes.xs"
+#line 145 "Processes.xs"
 	++sp;
 	*sp = newSVnv((STRUCT->processNumber).highLongOfPSN * 4294967296.0 + (STRUCT->processNumber).lowLongOfPSN);	
 	sv_2mortal(*sp);
 		break;
 	    case 2:	  /* processType */
-#line 142 "Processes.xs"
+#line 146 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->processType));
 		break;
 	    case 3:	  /* processSignature */
-#line 143 "Processes.xs"
+#line 147 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setpvn(*sp, (char *) &(STRUCT->processSignature), 4);
 		break;
 	    case 4:	  /* processMode */
-#line 144 "Processes.xs"
+#line 148 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->processMode));
 		break;
 	    case 5:	  /* processLocation */
-#line 145 "Processes.xs"
+#line 149 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setref_pv(*sp, "Ptr", (void*)(STRUCT->processLocation));
 		break;
 	    case 6:	  /* processSize */
-#line 146 "Processes.xs"
+#line 150 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->processSize));
 		break;
 	    case 7:	  /* processFreeMem */
-#line 147 "Processes.xs"
+#line 151 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->processFreeMem));
 		break;
 	    case 8:	  /* processLauncher */
-#line 148 "Processes.xs"
+#line 152 "Processes.xs"
 	++sp;
 	*sp = newSVnv((STRUCT->processLauncher).highLongOfPSN * 4294967296.0 + (STRUCT->processLauncher).lowLongOfPSN);	
 	sv_2mortal(*sp);
 		break;
 	    case 9:	  /* processLaunchDate */
-#line 149 "Processes.xs"
+#line 153 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->processLaunchDate));
 		break;
 	    case 10:	  /* processActiveTime */
-#line 150 "Processes.xs"
+#line 154 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setuv(*sp, (UV)(STRUCT->processActiveTime));
 		break;
 	    case 11:	  /* processAppSpec */
-#line 151 "Processes.xs"
+#line 155 "Processes.xs"
 	++sp;
 	*sp = sv_newmortal();
 	sv_setpv(*sp, GUSIFSp2FullPath((STRUCT->processAppSpec)));
@@ -317,13 +321,13 @@ XS(XS_ProcessInfo_ProcessInfo)
 	} else { 	   /* Set field */
 	    switch (ix) {
 	    case 0:	  /* processName */
-#line 140 "Processes.xs"
+#line 144 "Processes.xs"
 	 STRUCT->processName;
 
 	MacPerl_CopyC2P(SvPV_nolen( ST(1)),  STRUCT->processName);
 		break;
 	    case 1:	  /* processNumber */
-#line 141 "Processes.xs"
+#line 145 "Processes.xs"
 	 STRUCT->processNumber;
 
 	{
@@ -335,21 +339,21 @@ XS(XS_ProcessInfo_ProcessInfo)
 	};
 		break;
 	    case 2:	  /* processType */
-#line 142 "Processes.xs"
+#line 146 "Processes.xs"
 	 STRUCT->processType = (unsigned long)SvUV( ST(1));
 		break;
 	    case 3:	  /* processSignature */
-#line 143 "Processes.xs"
+#line 147 "Processes.xs"
 	 STRUCT->processSignature;
 
 	memcpy(& STRUCT->processSignature, SvPV_nolen( ST(1)), sizeof(OSType));
 		break;
 	    case 4:	  /* processMode */
-#line 144 "Processes.xs"
+#line 148 "Processes.xs"
 	 STRUCT->processMode = (unsigned long)SvUV( ST(1));
 		break;
 	    case 5:	  /* processLocation */
-#line 145 "Processes.xs"
+#line 149 "Processes.xs"
 	 STRUCT->processLocation;
 
 	if (SvROK( ST(1))) {
@@ -360,15 +364,15 @@ XS(XS_ProcessInfo_ProcessInfo)
 	    croak(" STRUCT->processLocation is not a reference");
 		break;
 	    case 6:	  /* processSize */
-#line 146 "Processes.xs"
+#line 150 "Processes.xs"
 	 STRUCT->processSize = (unsigned long)SvUV( ST(1));
 		break;
 	    case 7:	  /* processFreeMem */
-#line 147 "Processes.xs"
+#line 151 "Processes.xs"
 	 STRUCT->processFreeMem = (unsigned long)SvUV( ST(1));
 		break;
 	    case 8:	  /* processLauncher */
-#line 148 "Processes.xs"
+#line 152 "Processes.xs"
 	 STRUCT->processLauncher;
 
 	{
@@ -380,21 +384,21 @@ XS(XS_ProcessInfo_ProcessInfo)
 	};
 		break;
 	    case 9:	  /* processLaunchDate */
-#line 149 "Processes.xs"
+#line 153 "Processes.xs"
 	 STRUCT->processLaunchDate = (unsigned long)SvUV( ST(1));
 		break;
 	    case 10:	  /* processActiveTime */
-#line 150 "Processes.xs"
+#line 154 "Processes.xs"
 	 STRUCT->processActiveTime = (unsigned long)SvUV( ST(1));
 		break;
 	    case 11:	  /* processAppSpec */
-#line 151 "Processes.xs"
+#line 155 "Processes.xs"
 	 STRUCT->processAppSpec;
 
 	GUSIPath2FSp((char *) SvPV_nolen( ST(1)),  STRUCT->processAppSpec);
 		break;
 	    }
-#line 139 "Processes.xs"
+#line 143 "Processes.xs"
 	}
     }
     XSRETURN(1);
@@ -414,9 +418,9 @@ XS(XS_ProcessInfo_DESTROY)
 	}
 	else
 	    croak("pi is not a reference");
-#line 160 "Processes.xs"
+#line 164 "Processes.xs"
 	free(pi);
-#line 420 "Processes.c"
+#line 424 "Processes.c"
     }
     XSRETURN_EMPTY;
 }
@@ -436,12 +440,12 @@ XS(XS_Mac__Processes_LaunchApplication)
 	}
 	else
 	    croak("LaunchParams is not of type LaunchParam");
-#line 177 "Processes.xs"
+#line 181 "Processes.xs"
 	if (gMacPerl_OSErr = LaunchApplication(LaunchParams)) {
         XSRETURN_UNDEF;
     }
 	RETVAL = LaunchParams->launchProcessSN;
-#line 445 "Processes.c"
+#line 449 "Processes.c"
 	ST(0) = newSVnv(RETVAL.highLongOfPSN * 4294967296.0 + RETVAL.lowLongOfPSN);	
 	sv_2mortal(ST(0));
     }
@@ -456,15 +460,15 @@ XS(XS_Mac__Processes_LaunchDeskAccessory)
     {
 	SV *	pFileSpec = ST(0);
 	Str255	pDAName;
-#line 200 "Processes.xs"
+#line 204 "Processes.xs"
 	FSSpec	spec;
 	FSSpec *	fssp = nil;
-#line 463 "Processes.c"
+#line 467 "Processes.c"
 	MacOSRet	RETVAL;
 	dXSTARG;
 
 	MacPerl_CopyC2P(SvPV_nolen(ST(1)), pDAName);
-#line 203 "Processes.xs"
+#line 207 "Processes.xs"
 #ifndef MACOS_TRADITIONAL
 	croak("Usage: Mac::Processes::LaunchDeskAccessory unsupported in Carbon");
 #else
@@ -472,7 +476,7 @@ XS(XS_Mac__Processes_LaunchDeskAccessory)
 		fssp = &spec;
 	RETVAL = LaunchDeskAccessory(fssp, pDAName);
 #endif
-#line 476 "Processes.c"
+#line 480 "Processes.c"
 	XSprePUSH; PUSHi((IV)!(gMacPerl_OSErr = (short)(RETVAL)));
     }
     XSRETURN(1);
@@ -485,11 +489,11 @@ XS(XS_Mac__Processes_GetCurrentProcess)
 	Perl_croak(aTHX_ "Usage: Mac::Processes::GetCurrentProcess()");
     {
 	ProcessSerialNumber	RETVAL;
-#line 224 "Processes.xs"
+#line 228 "Processes.xs"
 	if (gMacPerl_OSErr = GetCurrentProcess(&RETVAL)) {
 		XSRETURN_UNDEF;
 	}
-#line 493 "Processes.c"
+#line 497 "Processes.c"
 	ST(0) = newSVnv(RETVAL.highLongOfPSN * 4294967296.0 + RETVAL.lowLongOfPSN);	
 	sv_2mortal(ST(0));
     }
@@ -503,11 +507,11 @@ XS(XS_Mac__Processes_GetFrontProcess)
 	Perl_croak(aTHX_ "Usage: Mac::Processes::GetFrontProcess()");
     {
 	ProcessSerialNumber	RETVAL;
-#line 240 "Processes.xs"
+#line 244 "Processes.xs"
 	if (gMacPerl_OSErr = GetFrontProcess(&RETVAL)) {
 		XSRETURN_UNDEF;
 	}
-#line 511 "Processes.c"
+#line 515 "Processes.c"
 	ST(0) = newSVnv(RETVAL.highLongOfPSN * 4294967296.0 + RETVAL.lowLongOfPSN);	
 	sv_2mortal(ST(0));
     }
@@ -530,12 +534,12 @@ XS(XS_Mac__Processes_GetNextProcess)
 		PSN.lowLongOfPSN = (long) low;
 		PSN.highLongOfPSN = (long) ((psn - low)/4294967296.0);
 	};
-#line 257 "Processes.xs"
+#line 261 "Processes.xs"
 	if (gMacPerl_OSErr = GetNextProcess(&PSN)) {
 		XSRETURN_UNDEF;
 	} else
 		RETVAL = PSN;
-#line 539 "Processes.c"
+#line 543 "Processes.c"
 	ST(0) = newSVnv(RETVAL.highLongOfPSN * 4294967296.0 + RETVAL.lowLongOfPSN);	
 	sv_2mortal(ST(0));
     }
@@ -558,13 +562,13 @@ XS(XS_Mac__Processes_GetProcessInformation)
 		PSN.lowLongOfPSN = (long) low;
 		PSN.highLongOfPSN = (long) ((psn - low)/4294967296.0);
 	};
-#line 281 "Processes.xs"
+#line 285 "Processes.xs"
 	RETVAL = NewProcessInfo();
 	if (gMacPerl_OSErr = GetProcessInformation(&PSN, RETVAL)) {
 		free(RETVAL);
 		XSRETURN_UNDEF;
 	} 
-#line 568 "Processes.c"
+#line 572 "Processes.c"
 	ST(0) = sv_newmortal();
 	sv_setref_pv(ST(0), "ProcessInfo", (void*)RETVAL);
     }
@@ -645,11 +649,11 @@ XS(XS_Mac__Processes_SameProcess)
 		PSN2.lowLongOfPSN = (long) low;
 		PSN2.highLongOfPSN = (long) ((psn - low)/4294967296.0);
 	};
-#line 329 "Processes.xs"
+#line 333 "Processes.xs"
 	if (gMacPerl_OSErr = SameProcess(&PSN1, &PSN2, &RETVAL)) {
 		XSRETURN_UNDEF;
 	} 
-#line 653 "Processes.c"
+#line 657 "Processes.c"
 	XSprePUSH; PUSHi((IV)RETVAL);
     }
     XSRETURN(1);
@@ -661,11 +665,65 @@ XS(XS_Mac__Processes_ExitToShell)
     if (items != 0)
 	Perl_croak(aTHX_ "Usage: Mac::Processes::ExitToShell()");
     {
-#line 343 "Processes.xs"
+#line 347 "Processes.xs"
 	croak("ExitToShell() unsupported. Use exit.");
-#line 667 "Processes.c"
+#line 671 "Processes.c"
     }
     XSRETURN_EMPTY;
+}
+
+XS(XS_Mac__Processes_GetProcessPID)
+{
+    dXSARGS;
+    if (items != 1)
+	Perl_croak(aTHX_ "Usage: Mac::Processes::GetProcessPID(PSN)");
+    {
+	ProcessSerialNumber	PSN;
+	pid_t	RETVAL;
+	dXSTARG;
+
+	{
+		double psn = SvNV(ST(0));
+		double low = fmod(psn, 4294967296.0);
+
+		PSN.lowLongOfPSN = (long) low;
+		PSN.highLongOfPSN = (long) ((psn - low)/4294967296.0);
+	};
+#line 359 "Processes.xs"
+#ifdef MACOS_TRADITIONAL
+	croak("Usage: Mac::Processes::GetProcessPID supported in Mac OS X only");
+#else
+	if (gMacPerl_OSErr = GetProcessPID(&PSN, &RETVAL)) {
+		XSRETURN_UNDEF;
+	}
+#endif
+#line 701 "Processes.c"
+	XSprePUSH; PUSHi((IV)RETVAL);
+    }
+    XSRETURN(1);
+}
+
+XS(XS_Mac__Processes_GetProcessForPID)
+{
+    dXSARGS;
+    if (items != 1)
+	Perl_croak(aTHX_ "Usage: Mac::Processes::GetProcessForPID(PID)");
+    {
+	pid_t	PID = (pid_t)SvIV(ST(0));
+	ProcessSerialNumber	RETVAL;
+#line 379 "Processes.xs"
+#ifdef MACOS_TRADITIONAL
+	croak("Usage: Mac::Processes::GetProcessForPID supported in Mac OS X only");
+#else
+	if (gMacPerl_OSErr = GetProcessForPID(PID, &RETVAL)) {
+		XSRETURN_UNDEF;
+	}
+#endif
+#line 723 "Processes.c"
+	ST(0) = newSVnv(RETVAL.highLongOfPSN * 4294967296.0 + RETVAL.lowLongOfPSN);	
+	sv_2mortal(ST(0));
+    }
+    XSRETURN(1);
 }
 
 #ifdef __cplusplus
@@ -729,6 +787,8 @@ XS(boot_Mac__Processes)
         newXS("Mac::Processes::WakeUpProcess", XS_Mac__Processes_WakeUpProcess, file);
         newXS("Mac::Processes::SameProcess", XS_Mac__Processes_SameProcess, file);
         newXS("Mac::Processes::ExitToShell", XS_Mac__Processes_ExitToShell, file);
+        newXS("Mac::Processes::GetProcessPID", XS_Mac__Processes_GetProcessPID, file);
+        newXS("Mac::Processes::GetProcessForPID", XS_Mac__Processes_GetProcessForPID, file);
     XSRETURN_YES;
 }
 

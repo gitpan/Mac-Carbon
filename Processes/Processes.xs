@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.5 2002/11/13 02:04:52 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.6 2002/12/10 01:50:57 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,10 @@
  *    as specified in the README file.
  *
  * $Log: Processes.xs,v $
+ * Revision 1.6  2002/12/10 01:50:57  pudge
+ * Add GetProcessPID and GetProcessForPID, for mapping between Mac OS PSN
+ * and Unix PID.
+ *
  * Revision 1.5  2002/11/13 02:04:52  pudge
  * Aieeeeee!  Big ol' Carbon update.
  *
@@ -341,6 +345,46 @@ void
 ExitToShell()
 	CODE:
 	croak("ExitToShell() unsupported. Use exit.");
+
+=item GetProcessPID(PSN)
+
+Get the UNIX process ID corresponding to a process serial number.
+Mac OS X only.
+
+=cut
+pid_t
+GetProcessPID(PSN)
+	ProcessSerialNumber	PSN
+	CODE:
+#ifdef MACOS_TRADITIONAL
+	croak("Usage: Mac::Processes::GetProcessPID supported in Mac OS X only");
+#else
+	if (gMacPerl_OSErr = GetProcessPID(&PSN, &RETVAL)) {
+		XSRETURN_UNDEF;
+	}
+#endif
+	OUTPUT:
+	RETVAL
+
+=item GetProcessForPID(PID)
+
+Get the process serial number corresponding to a UNIX process ID.
+Mac OS X only.
+
+=cut
+ProcessSerialNumber
+GetProcessForPID(PID)
+	pid_t	PID
+	CODE:
+#ifdef MACOS_TRADITIONAL
+	croak("Usage: Mac::Processes::GetProcessForPID supported in Mac OS X only");
+#else
+	if (gMacPerl_OSErr = GetProcessForPID(PID, &RETVAL)) {
+		XSRETURN_UNDEF;
+	}
+#endif
+	OUTPUT:
+	RETVAL
 
 =back
 

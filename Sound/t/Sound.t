@@ -38,12 +38,32 @@ SKIP: {
 	my $oid  = 129;
 	my $onam = 'Original';
 
-	my $file1 = catfile(curdir(), 't', $ofil);
-	my $file2 = catfile(curdir(), 'Sound', 't', $ofil);
-	my $file = -e $ofil	? $ofil
-		:  -e $file1	? $file1
-		:  -e $file2	? $file2
+	my $dir1 = catfile(curdir(), 't'); #, $ofil);
+	my $dir2 = catfile(curdir(), 'Sound', 't'); #, $ofil);
+	my $dir  = -e $ofil			? curdir()
+		:  -e catfile($dir1, $ofil)	? $dir1
+		:  -e catfile($dir2, $ofil)	? $dir2
 		: '';
+
+	# try to fix forks ... it's ok if we can't, we'll live
+	if ($^O eq 'darwin') {
+		my $ifil = $ofil;
+		$ofil = 'Sound.rsrc';
+
+		# already been here?
+		unless (-e catfile($dir, $ofil)) {
+			my $no = 0;
+			if (open(my $df, '>', catfile($dir, $ofil))) {
+			if (open(my $rf, '>', catfile($dir, $ofil, '..namedfork', 'rsrc'))) {
+			if (open($df, '<', catfile($dir, $ifil))) {
+				print $rf $_ while <$df>;
+			}}}
+
+			$ofil = $ifil unless -e catfile($dir, $ofil);
+		}
+	}
+
+	my $file = catdir($dir, $ofil);
 
 	my($res, $snd);
 	$res = FSpOpenResFile($file, 0) if $file;

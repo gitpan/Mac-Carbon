@@ -130,6 +130,15 @@ of the issues, including bugs and possibilities for bugs, involved.
 
 =item *
 
+AEGetDescData is screwing up on returning data of type TEXT with two or
+three characters, in AppleEvents.xs for AEDesc->data().  Freaky.
+
+=item *
+
+When creating FSSpecs, the file must exist.  This is Bad.
+
+=item *
+
 Docs not updated for Carbon incompatibilities (including changes to
 Processes fields).  Generate list of all unsupported functions.
 
@@ -209,7 +218,7 @@ use strict;
 use base 'Exporter';
 use vars qw(@EXPORT @EXPORT_OK %EXPORT_TAGS $VERSION);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 # we are just a frontend, so loop over the modules, and
 # suck up everything in @EXPORT
@@ -256,6 +265,12 @@ __END__
 The Mac Toolbox modules were written by Matthias Neeracher
 E<lt>neeracher@mac.comE<gt>.  They are currently maintained by Chris
 Nandor E<lt>pudge@pobox.comE<gt>.
+
+=head1 THANKS
+
+Michael Blakeley E<lt>mike@blakeley.comE<gt>,
+Gero Herrmann E<lt>herr@ils.uec.ac.jpE<gt>,
+Dan Sugalksi E<lt>dan@sidhe.orgE<gt>.
 
 =head1 SEE ALSO
 
