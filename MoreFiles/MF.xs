@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/MoreFiles/MF.xs,v 1.6 2002/12/12 14:57:52 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/MoreFiles/MF.xs,v 1.7 2005/02/20 05:57:13 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: MF.xs,v $
+ * Revision 1.7  2005/02/20 05:57:13  pudge
+ * GUSI* memory leaks
+ *
  * Revision 1.6  2002/12/12 14:57:52  pudge
  * Update POD and docs
  *
@@ -61,7 +64,7 @@ static SV * newMortalFSSpec(short vRefNum, long dirID, ConstStr255Param name)
 	spec.parID		= dirID;
 	memcpy(spec.name, name, *name+1);
 	
-	return sv_2mortal(newSVpv(GUSIFSp2FullPath(&spec), 0));
+	return sv_2mortal(MP_GUSIFSp2FullPath(&spec, newSVpvn("", 0)));
 }
 
 static SV * gMFProc;
