@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.6 2002/12/10 01:50:57 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.7 2002/12/12 14:58:07 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Processes.xs,v $
+ * Revision 1.7  2002/12/12 14:58:07  pudge
+ * Update POD and docs
+ *
  * Revision 1.6  2002/12/10 01:50:57  pudge
  * Add GetProcessPID and GetProcessForPID, for mapping between Mac OS PSN
  * and Unix PID.
@@ -78,6 +81,8 @@ The fields are:
     launchPreferredSize
     launchMinimumSize
 
+=over 4
+
 =cut
 
 STRUCT * LaunchParam
@@ -94,7 +99,7 @@ STRUCT * LaunchParam
 Returns LaunchParam.
 
     $launch = 
-        new LaunchParam(launchAppSpec => "hd:apps:myapp", launchMinimumSize => 32000);
+        new LaunchParam(launchAppSpec =E<gt> "hd:apps:myapp", launchMinimumSize => 32000);
 
 =cut
 LaunchParam
@@ -109,6 +114,8 @@ _new()
 	RETVAL
 
 =item DESTROY LPB
+
+=back
 
 =cut
 void
@@ -138,6 +145,8 @@ The field names are:
     processActiveTime
     processAppSpec
 
+=over 4
+
 =cut
 
 STRUCT * ProcessInfo
@@ -156,6 +165,8 @@ STRUCT * ProcessInfo
 
 =item DESTROY PI
 
+=back
+
 =cut
 void
 DESTROY(pi)
@@ -166,6 +177,8 @@ DESTROY(pi)
 MODULE = Mac::Processes	PACKAGE = Mac::Processes
 
 =head2 Functions
+
+=over 4
 
 =item LaunchApplication LAUNCHPARAMS
 

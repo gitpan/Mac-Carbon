@@ -43,7 +43,7 @@ BEGIN {
 	
 	use vars qw(@ISA @EXPORT %Process $VERSION);
 	
-	$VERSION = '1.02';
+	$VERSION = '1.03';
 	@ISA = qw(Exporter DynaLoader);
 	@EXPORT = qw(
 		LaunchApplication
@@ -230,15 +230,11 @@ sub new {
 
 =include Processes.xs
 
-=head1 BUGS/LIMITATIONS
+=head1 AUTHOR
 
-=head1 FILES
-
-=head1 AUTHOR(S)
-
-Matthias Ulrich Neeracher <neeracher@mac.com> Author
-
-Bob Dalgleish <bob.dalgleish@sasknet.sk.ca> Documenter
+Written by Matthias Ulrich Neeracher E<lt>neeracher@mac.comE<gt>,
+documentation by Bob Dalgleish E<lt>bob.dalgleish@sasknet.sk.caE<gt>.
+Currently maintained by Chris Nandor E<lt>pudge@pobox.comE<gt>.
 
 =cut
 

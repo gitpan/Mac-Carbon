@@ -2,9 +2,6 @@
 
 Mac::Notification - Macintosh Toolbox Interface to Notification Manager
 
-=head1 SYNOPSIS
-
-
 =head1 DESCRIPTION
 
 Access to Inside Macintosh is essential for proper use of these functions.
@@ -23,7 +20,7 @@ BEGIN {
 	use DynaLoader ();
 	
 	use vars qw($VERSION @ISA @EXPORT);
-	$VERSION = '1.01';
+	$VERSION = '1.02';
 	@ISA = qw(Exporter DynaLoader);
 	@EXPORT = qw(
 		NMInstall
@@ -49,13 +46,10 @@ sub new {
 
 =include Notification.xs
 
-=head1 BUGS/LIMITATIONS
+=head1 AUTHOR
 
-=head1 FILES
-
-=head1 AUTHOR(S)
-
-Matthias Ulrich Neeracher <neeracher@mac.com> 
+Written by Matthias Ulrich Neeracher E<lt>neeracher@mac.comE<gt>.
+Currently maintained by Chris Nandor E<lt>pudge@pobox.comE<gt>.
 
 =cut
 

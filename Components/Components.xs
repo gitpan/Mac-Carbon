@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Components/Components.xs,v 1.3 2002/11/13 02:04:50 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Components/Components.xs,v 1.4 2002/12/12 14:57:22 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Components.xs,v $
+ * Revision 1.4  2002/12/12 14:57:22  pudge
+ * Update POD and docs
+ *
  * Revision 1.3  2002/11/13 02:04:50  pudge
  * Aieeeeee!  Big ol' Carbon update.
  *
@@ -69,11 +72,9 @@ static SV * MakeOSSV(OSType type)
 
 MODULE = Mac::Components	PACKAGE = Mac::Components
 
-=head1 EXTENSION
+=head2 Functions
 
-Mac::Components - Extension description
-
-=head2 Mac::Components
+=over 4
 
 =item RegisterComponentResource TR, GLOBAL
 
@@ -319,3 +320,6 @@ RegisterComponentResourceFile(resRefNum, global)
 		XSRETURN_UNDEF;
 	}
 
+=back
+
+=cut

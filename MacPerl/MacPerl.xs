@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/MacPerl/MacPerl.xs,v 1.4 2002/11/13 02:04:53 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/MacPerl/MacPerl.xs,v 1.5 2002/12/13 18:26:42 pudge Exp $
  *
  *    Copyright (c) 1995 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: MacPerl.xs,v $
+ * Revision 1.5  2002/12/13 18:26:42  pudge
+ * Fix header name for UFS
+ *
  * Revision 1.4  2002/11/13 02:04:53  pudge
  * Aieeeeee!  Big ol' Carbon update.
  *
@@ -41,7 +44,7 @@
 #include "../Carbon.h"
 #endif
 #include <Types.h>
-#include <QuickDraw.h>
+#include <Quickdraw.h>
 #include <Dialogs.h>
 #include <Lists.h>
 #ifdef MACOS_TRADITIONAL

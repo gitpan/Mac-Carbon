@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/MoreFiles/MF.xs,v 1.5 2002/11/13 02:04:52 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/MoreFiles/MF.xs,v 1.6 2002/12/12 14:57:52 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: MF.xs,v $
+ * Revision 1.6  2002/12/12 14:57:52  pudge
+ * Update POD and docs
+ *
  * Revision 1.5  2002/11/13 02:04:52  pudge
  * Aieeeeee!  Big ol' Carbon update.
  *
@@ -177,7 +180,7 @@ either uses PBHCopyFile(), or does all of the work PBHCopyFile()
 does.  The SRCSPEC is used to
 determine the location of the file to copy.  The DSTSPEC is
 used to determine the location of the
-destination directory.  If COPYNAME <> NIL, then it points
+destination directory.  If COPYNAME E<lt>E<gt> NIL, then it points
 to the name of the new file.  
 
 =cut

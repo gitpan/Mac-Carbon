@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Types/Types.xs,v 1.3 2002/11/13 02:04:53 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Types/Types.xs,v 1.4 2002/12/12 14:58:27 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Types.xs,v $
+ * Revision 1.4  2002/12/12 14:58:27  pudge
+ * Update POD and docs
+ *
  * Revision 1.3  2002/11/13 02:04:53  pudge
  * Aieeeeee!  Big ol' Carbon update.
  *
@@ -35,7 +38,7 @@
 
 MODULE = Mac::Types	PACKAGE = Mac::Types
 
-=head2 Functions
+=head2 XS Functions
 
 =over 4
 

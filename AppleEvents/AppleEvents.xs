@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/AppleEvents/AppleEvents.xs,v 1.3 2002/12/10 03:06:23 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/AppleEvents/AppleEvents.xs,v 1.7 2002/12/17 16:16:07 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,18 @@
  *    as specified in the README file.
  *
  * $Log: AppleEvents.xs,v $
+ * Revision 1.7  2002/12/17 16:16:07  pudge
+ * Use new constant
+ *
+ * Revision 1.6  2002/12/12 15:36:33  pudge
+ * Make work with gcc2
+ *
+ * Revision 1.5  2002/12/12 14:57:16  pudge
+ * Update POD and docs
+ *
+ * Revision 1.4  2002/12/10 19:13:22  pudge
+ * Fix dumb bug in getting AEDesc data.  Remove debugging code.
+ *
  * Revision 1.3  2002/12/10 03:06:23  pudge
  * Big update for Carbon support
  *
@@ -62,18 +74,7 @@ _new(package, type='null', data=0)
 		RETVAL.descriptorType	=	type;
 		RETVAL.dataHandle			=	data;
 #else
-		Ptr  theData;
-		Size theLength;
-
 		AEFail(AECreateDesc(type, *data, GetHandleSize(data), &RETVAL));
-		
-		theLength = AEGetDescDataSize(&RETVAL);
-		theData = malloc(theLength);
-		if (theData != NULL) {
-			AEFail(AEGetDescData(&RETVAL, theData, theLength));
-			printf("%d:%s:%d\n", theLength, theData, strlen(theData));
-		}
-		printf("%s", RETVAL.dataHandle);
 #endif
 	}
 	OUTPUT:
@@ -104,17 +105,18 @@ data(desc, newData=0)
 			desc.dataHandle	=	newData;
 		RETVAL = desc.dataHandle;
 #else
+		Ptr  descData;
+		Size descLen;
+
 		if (items>1) {
 			AEReplaceDescData(desc.descriptorType, *newData,
 				GetHandleSize(newData), &desc);
 		}
-		char * descData;
-		STRLEN descLen;
 
 		descLen = AEGetDescDataSize(&desc);
 		descData = NewPtr(descLen);
-		AEGetDescData(&desc, descData, descLen);
-		PtrToHand(descData, &RETVAL, strlen(descData));
+		AEFail(AEGetDescData(&desc, descData, descLen));
+		PtrToHand(descData, &RETVAL, descLen);
 #endif
 	}
 	OUTPUT:
@@ -136,7 +138,7 @@ _new(package, key=0, type='null', data=0)
 		RETVAL.descContent.descriptorType	=	type;
 		RETVAL.descContent.dataHandle			=	data;
 #else
-		AEReplaceDescData(type, *data, GetHandleSize(data), &RETVAL.descContent);
+		AEFail(AECreateDesc(type, *data, GetHandleSize(data), &RETVAL.descContent));
 #endif
 	}
 	OUTPUT:
@@ -181,17 +183,18 @@ data(desc, newData=0)
 			desc.descContent.dataHandle	=	newData;
 		RETVAL = desc.descContent.dataHandle;
 #else
+		Ptr  descData;
+		Size descLen;
+
 		if (items>1) {
 			AEReplaceDescData(desc.descContent.descriptorType, *newData,
 				GetHandleSize(newData), &desc.descContent);
 		}
-		char * descData;
-		STRLEN descLen;
 
 		descLen = AEGetDescDataSize(&desc.descContent);
 		descData = NewPtr(descLen);
-		AEGetDescData(&desc.descContent, descData, descLen);
-		PtrToHand(descData, &RETVAL, strlen(descData));
+		AEFail(AEGetDescData(&desc.descContent, descData, descLen));
+		PtrToHand(descData, &RETVAL, descLen);
 #endif
 	}
 	OUTPUT:
@@ -606,6 +609,7 @@ AESend(theAppleEvent, sendMode, sendPriority=kAENormalPriority, timeout=kAEDefau
 	short		sendPriority
 	long		timeout
 	CODE:
+	{
 #ifdef MACOS_TRADITIONAL
 	if (gPAESend) 
 		AEFail(
@@ -621,8 +625,9 @@ AESend(theAppleEvent, sendMode, sendPriority=kAENormalPriority, timeout=kAEDefau
 #else
 	// AESendMessage code for Mac OS X from Steve Zellers
 	mach_port_t port;
+
 	mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &port);
-	AEPutAttributePtr(&theAppleEvent, keyReplyPortAttr, typeMachPort, &port, sizeof(port));
+	AEPutAttributePtr(&theAppleEvent, keyPerlReplyPortAttr, typeMachPort, &port, sizeof(port));
 	AEFail(
 		AESendMessage(
 			&theAppleEvent, &RETVAL, 
@@ -631,6 +636,7 @@ AESend(theAppleEvent, sendMode, sendPriority=kAENormalPriority, timeout=kAEDefau
 	);
 	mach_port_destroy(mach_task_self(), port);
 #endif
+	}
 	OUTPUT:
 	RETVAL
 
@@ -839,6 +845,8 @@ speeded up AE library. Consult the AEGizmo documentation for details of usage
 of the library. The Build/Print facility uses a formatting convention similar
 to scanf/printf to put things together.
 
+=over 4
+
 =item AEBuild FORMAT, PARM, ...
 
 Build an AppleEvent descriptor using the format per the Gizmo documentation
@@ -983,12 +991,16 @@ AEPrint(desc)
 	OUTPUT:
 	RETVAL
 
+=back
+
 =head2 AEGizmos Subdescriptors
 
 The Apple Event Gizmos subdescriptor approach uses a dictionary method for
 extracting and constructing descriptors.  Parsing an Apple Event using the
 dictionary is very time efficient, and translating to and from the dictionary
 tables is quick and efficient.
+
+=over 4
 
 =item AEDescToSubDesc DESC
 
@@ -1189,6 +1201,8 @@ MODULE = Mac::AppleEvents	PACKAGE = AEStream
 
 The Apple Event Gizmos streams approach uses a streaming model for building 
 a sequence of descriptors.
+
+=over 4
 
 =item new AEStream
 

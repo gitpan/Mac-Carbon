@@ -56,9 +56,10 @@ The Test::More module is required for running tests.
 
 The separate Mac::Errors module is not required, but is highly recommended.
 
-These modules have only been tested with perl 5.6.0 and gcc3 on Mac OS X 10.2.
-See the note in L<BUILDING>.  Problems have been noted with Mac OS X 10.1.x;
-please see the SourceForge,net web site for a binary installer.
+Building these modules has been tested successfully on Mac OS X 10.1 and 10.2,
+with perl 5.6.0/5.6.1/5.8.0, with both gcc2 and gcc3.  Some tests fail on
+UFS ([GS]etFileInfo in MacPerl.t).  There are a lot of warnings on 10.1,
+though the tests should all pass.
 
 The modules will compile and test remotely (such as via ssh, instead of
 via the Terminal), but some of the tests might not run properly, and
@@ -72,17 +73,8 @@ Hm, the MacPerl.t test might not fully work remotely now.  Not tested yet.
 
 Matthias added some extensions to XS for his Toolbox modules; they were
 never fully embraced by p5p, and as a result, we have a separate xsubpp
-for these additional XS macros. There is currently no resolution to this
-problem.  Either we write a pre-preprocessor that converts the .xs files
-to be able to be handled by perl's xsubpp, or we modify the .xs so that
-it can be handled by perl's xsubpp, or we distribute a separate xsubpp
-(which is dangerous, as xsubpp changes with versions of perl).
-
-Currently, Mac::Carbon is distributed with the already-processed .c files.
-If you really want to compile with the .xs files, you can use the xsubpp
-programs (either the 5.6 or 5.8 versions) included in the distribution.
-This is only temporary, until we have a permanent resolution to these
-issues.
+for these additional XS macros.  The Makefile.PLs will choose and use
+the appropriate xsubpp version for your version of perl.
 
 You might want to run the test suite with C<make test TEST_VERBOSE=1>.
 It's cool.
@@ -107,7 +99,8 @@ modules are:
 	Mac::Speech
 	Mac::Types
 
-Coming next, hopefully:
+Coming next, hopefully (to be distributed separately on the CPAN
+and SourceForge.net):
 
 	Mac::AppleEvents::Simple
 	Mac::OSA::Simple
@@ -142,12 +135,11 @@ MacPerl is mostly implemented in F<macish.c> / F<macish.h>.
 
 =head1 AUTHOR
 
-The original Mac Toolbox modules were written by Matthias Neeracher
-E<lt>neeracher@mac.comE<gt>.  Mac::Glue and the Simple modules were
-written by Chris Nandor E<lt>pudge@pobox.comE<gt>.  Mac::Carbon
-is currently maintained by Chris Nandor.
+The Mac Toolbox modules were written by Matthias Neeracher
+E<lt>neeracher@mac.comE<gt>.  They are currently maintained by Chris
+Nandor E<lt>pudge@pobox.comE<gt>.
 
 
 =head1 VERSION
 
-$Id: README,v 1.2 2002/12/10 03:17:52 pudge Exp $
+$Id: README,v 1.6 2002/12/17 16:40:19 pudge Exp $

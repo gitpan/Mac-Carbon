@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.3 2002/12/10 01:47:17 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.6 2002/12/17 16:18:37 pudge Exp $
  *
  *    Copyright (c) 2002 Matthias Neeracher, Chris Nandor
  *
@@ -6,6 +6,15 @@
  *    as specified in the README file.
  *
  * $Log: Carbon.h,v $
+ * Revision 1.6  2002/12/17 16:18:37  pudge
+ * Use new constant
+ *
+ * Revision 1.5  2002/12/12 15:36:26  pudge
+ * Make work with gcc2
+ *
+ * Revision 1.4  2002/12/12 14:57:08  pudge
+ * Update POD and docs
+ *
  * Revision 1.3  2002/12/10 01:47:17  pudge
  * Some cleanup, and add idle proc, which we don't actually use
  *
@@ -141,6 +150,7 @@ static char * GUSIFSp2FullPath(const FSSpec * spec)
 	UInt8 *		path     = (UInt8 *)NewPtr(2*PATH_MAX); // to be safe
 	UInt32		pathSize = 2*PATH_MAX;
 
+	// File doesn't exist, big problem
 	if ( (gMacPerl_OSErr = FSpMakeFSRef(spec, &ref)) ) { // && (gMacPerl_OSErr != fnfErr) )
 		return "";
 	}
@@ -159,6 +169,8 @@ static OSErr GUSIPath2FSp(const char * fileName, FSSpec * spec)
 
 	// convert from GUSI-style FSSpec encoding (see GUSIFSp2Encoding)
 	if (*fileName == '\021' && fileName[13] == ':') {
+		Str255	path;
+
 		spec->vRefNum 	= 0;
 		spec->parID	= 0;
 
@@ -171,7 +183,6 @@ static OSErr GUSIPath2FSp(const char * fileName, FSSpec * spec)
 			fileName += 13;
 		}
 
-		Str255	path;
 		MacPerl_CopyC2P(fileName, path);
 
  		switch (gMacPerl_OSErr = FSMakeFSSpec(spec->vRefNum, spec->parID, path, spec)) {
@@ -183,9 +194,11 @@ static OSErr GUSIPath2FSp(const char * fileName, FSSpec * spec)
 		}
 	}
 
+	// File doesn't exist, big problem
 	if (gMacPerl_OSErr = FSPathMakeRef((UInt8 *)fileName, &ref, NULL))
 		return gMacPerl_OSErr;
 
+	// get FSSpec
 	gMacPerl_OSErr = FSGetCatalogInfo(&ref, kFSCatInfoNone, NULL, NULL, spec, NULL);
 	return gMacPerl_OSErr;
 }
@@ -274,6 +287,10 @@ static void fgetfileinfo(char * path, OSType * creator, OSType * type)
 	}
 	DisposePtr((char *)spec);
 }
+
+// keyReplyPortAttr is not found on some Mac OS X versions ...
+// so define our own.  nyah nyah.
+#define keyPerlReplyPortAttr 'repp'
 
 /* Maybe we'll have use for this again? *
 * 
