@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.12 2005/02/20 05:57:12 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.13 2005/05/04 05:43:29 pudge Exp $
  *
  *    Copyright (c) 2002 Matthias Neeracher, Chris Nandor
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Carbon.h,v $
+ * Revision 1.13  2005/05/04 05:43:29  pudge
+ * Change cast for errno
+ *
  * Revision 1.12  2005/02/20 05:57:12  pudge
  * GUSI* memory leaks
  *
@@ -86,7 +89,7 @@ typedef Ptr	PtrRet;
 #include <errno.h>
 
 /* $! and $^E will both be set together, which is fine (for now?) */
-#define gMacPerl_OSErr (short)errno
+#define gMacPerl_OSErr errno
 
 // keyReplyPortAttr is not found on some Mac OS X versions ...
 // so define our own.  nyah nyah.
