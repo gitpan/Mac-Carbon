@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/OSA/OSA.xs,v 1.6 2005/03/09 23:25:03 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/OSA/OSA.xs,v 1.7 2005/05/15 04:53:25 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: OSA.xs,v $
+ * Revision 1.7  2005/05/15 04:53:25  pudge
+ * Add OSAGetAppTerminology to Mac::OSA
+ *
  * Revision 1.6  2005/03/09 23:25:03  pudge
  * Fix Makefile to work with latest ExtUtils::MakeMaker beta. (Michael Schwern)
  *
@@ -48,6 +51,7 @@
 #include <Memory.h>
 #include <OSA.h>
 #include <OSAGeneric.h>
+#include <ASDebugging.h>
 
 MODULE = Mac::OSA	PACKAGE = Mac::OSA
 
@@ -261,6 +265,26 @@ OSAGetProperty(scriptingComponent, modeFlags, contextID, variableName)
 		XSRETURN_UNDEF;
 	}
 	if (gMacPerl_OSErr = (short) OSACoerceToDesc(scriptingComponent, scriptValueID, typeObjectSpecifier, kOSAModeNull, &RETVAL)) {
+		XSRETURN_UNDEF;
+	}
+	OUTPUT:
+	RETVAL
+
+=item OSAGetAppTerminology SCRIPTINGCOMPONENT, MODEFLAGS, FILE, TERMINOLOGYID
+
+OSAGetAppTerminology gets one or more scripting terminology resources from
+the specified file.  Returns an AEDesc.
+
+=cut
+AEDesc
+OSAGetAppTerminology(scriptingComponent, modeFlags, file, terminologyID=0)
+	ComponentInstance scriptingComponent
+	long 					modeFlags
+	FSSpec				file
+	short					terminologyID
+	CODE:
+	Boolean				didLaunch;
+	if (gMacPerl_OSErr = (short) OSAGetAppTerminology(scriptingComponent, modeFlags, &file, terminologyID, &didLaunch, &RETVAL)) {
 		XSRETURN_UNDEF;
 	}
 	OUTPUT:
