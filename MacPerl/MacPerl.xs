@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/MacPerl/MacPerl.xs,v 1.6 2005/02/20 05:57:13 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/MacPerl/MacPerl.xs,v 1.7 2006/06/20 01:39:18 pudge Exp $
  *
  *    Copyright (c) 1995 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: MacPerl.xs,v $
+ * Revision 1.7  2006/06/20 01:39:18  pudge
+ * Loads of fixes, mostly for Intel port
+ *
  * Revision 1.6  2005/02/20 05:57:13  pudge
  * GUSI* memory leaks
  *
@@ -362,8 +365,8 @@ MP_GetFileInfo(path)
 	char *	path
 	PPCODE:
 	{
-		unsigned long	creator;
-		unsigned long	type;
+		OSType	creator;
+		OSType	type;
 		
 		errno = 0;
 		
@@ -374,10 +377,15 @@ MP_GetFileInfo(path)
 				XPUSHs(&PL_sv_undef);
 			/* Else return empty list */
 		} else if (GIMME != G_ARRAY) {
-			XPUSHs(sv_2mortal(newSVpv((char *) &type, 4)));
+			OSType ntype = ntohl(type);
+
+			XPUSHs(sv_2mortal(newSVpv((char *) &ntype, 4)));
 		} else {
-			XPUSHs(sv_2mortal(newSVpv((char *) &creator, 4)));
-			XPUSHs(sv_2mortal(newSVpv((char *) &type, 4)));
+			OSType ntype = ntohl(type);
+			OSType ncreator = ntohl(creator);
+
+			XPUSHs(sv_2mortal(newSVpv((char *) &ncreator, 4)));
+			XPUSHs(sv_2mortal(newSVpv((char *) &ntype, 4)));
 		}
 	}
 
@@ -462,6 +470,9 @@ MP_Choose(domain, type, prompt, ...)
 	int		type
 	char *	prompt
 	CODE:
+#ifndef MACOS_TRADITIONAL
+	croak("Usage: MacPerl::Choose unsupported in Carbon");
+#else
 	{
 		int 	 	flags;
 		STRLEN	len;
@@ -487,6 +498,7 @@ MP_Choose(domain, type, prompt, ...)
 		else
 			ST(0) = sv_2mortal(newSVpv(gMacPerlScratch, len));
 	}
+#endif
 
 void
 MP_Pick(prompt, ...)

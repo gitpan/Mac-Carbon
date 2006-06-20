@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.9 2003/10/28 05:53:30 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.10 2006/06/20 01:39:18 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Processes.xs,v $
+ * Revision 1.10  2006/06/20 01:39:18  pudge
+ * Loads of fixes, mostly for Intel port
+ *
  * Revision 1.9  2003/10/28 05:53:30  pudge
  * Add Carbon compat. notes
  *
@@ -439,7 +442,9 @@ LSFindApplicationForInfo(creator, bundleID=NULL, name=NULL)
 #ifdef MACOS_TRADITIONAL
 	croak("Usage: Mac::Processes::LSFindApplicationForInfo unsupported in Mac OS");
 #else
-	gMacPerl_OSErr = LSFindApplicationForInfo(creator, bundleID, name, &RETVAL, NULL);
+	if (gMacPerl_OSErr = LSFindApplicationForInfo(creator, bundleID, name, &RETVAL, NULL)) {
+		XSRETURN_UNDEF;
+	}
 #endif
 	OUTPUT:
 	RETVAL
