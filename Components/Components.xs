@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Components/Components.xs,v 1.5 2006/06/20 01:39:18 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Components/Components.xs,v 1.6 2006/06/22 02:58:18 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Components.xs,v $
+ * Revision 1.6  2006/06/22 02:58:18  pudge
+ * various minor fixes
+ *
  * Revision 1.5  2006/06/20 01:39:18  pudge
  * Loads of fixes, mostly for Intel port
  *
@@ -167,7 +170,7 @@ CountComponents(componentType = &PL_sv_undef, componentSubType = &PL_sv_undef, c
 
 The GetComponentInfo function returns information about the specified component.
 
-	($info, $name, $mask, $flags, $manufacturer, $subtype, $type) =
+	($type, $subtype, $manufacturer, $flags, $mask, $name, $info) =
 		GetComponentInfo($Component);
 
 =cut

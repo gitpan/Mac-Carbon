@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/InternetConfig/InternetConfig.xs,v 1.5 2003/10/28 05:53:30 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/InternetConfig/InternetConfig.xs,v 1.6 2006/06/22 02:58:18 pudge Exp $
  *
  *    Copyright (c) 1995 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: InternetConfig.xs,v $
+ * Revision 1.6  2006/06/22 02:58:18  pudge
+ * various minor fixes
+ *
  * Revision 1.5  2003/10/28 05:53:30  pudge
  * Add Carbon compat. notes
  *
@@ -330,7 +333,7 @@ ICGetConfigReference(inst)
 	ICInstance	inst;
 	CODE:
 #ifndef MACOS_TRADITIONAL
-	croak("Usage: Mac::InternetConfig::ICGeneralFindConfigFile unsupported in Carbon");
+	croak("Usage: Mac::InternetConfig::ICGetConfigReference unsupported in Carbon");
 #else
 	if (!(RETVAL = NewHandle(0))) {
 		XSRETURN_UNDEF;
