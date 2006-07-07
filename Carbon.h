@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.14 2006/06/20 01:39:17 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.15 2006/07/07 06:40:50 pudge Exp $
  *
  *    Copyright (c) 2002 Matthias Neeracher, Chris Nandor
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: Carbon.h,v $
+ * Revision 1.15  2006/07/07 06:40:50  pudge
+ * More endian fixes
+ *
  * Revision 1.14  2006/06/20 01:39:17  pudge
  * Loads of fixes, mostly for Intel port
  *
@@ -135,7 +138,12 @@ static bool ReadHex(const char * path, int bytes, char * result)
 /* Intel expects OSTypes in "reverse order" */
 static void ConvertFourCharCode(OSType dataType, char * dataPtr)
 {
-	if (dataType == typeEnumerated || dataType == typeType || dataType == typeProperty || dataType == typeKeyword || dataType == typeApplSignature) {
+	if (dataType == typeEnumerated
+	 || dataType == typeType
+	 || dataType == typeProperty
+	 || dataType == typeKeyword
+	 || dataType == typeApplSignature
+	 || dataType == typeAbsoluteOrdinal) {
 		*(long *)dataPtr = ntohl(*(long*)dataPtr);
 	}
 }

@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/MacPerl/MacPerl.xs,v 1.7 2006/06/20 01:39:18 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/MacPerl/MacPerl.xs,v 1.8 2006/07/07 06:40:50 pudge Exp $
  *
  *    Copyright (c) 1995 Matthias Neeracher
  *
@@ -6,6 +6,9 @@
  *    as specified in the README file.
  *
  * $Log: MacPerl.xs,v $
+ * Revision 1.8  2006/07/07 06:40:50  pudge
+ * More endian fixes
+ *
  * Revision 1.7  2006/06/20 01:39:18  pudge
  * Loads of fixes, mostly for Intel port
  *
@@ -377,12 +380,12 @@ MP_GetFileInfo(path)
 				XPUSHs(&PL_sv_undef);
 			/* Else return empty list */
 		} else if (GIMME != G_ARRAY) {
-			OSType ntype = ntohl(type);
+			OSType ntype = htonl(type);
 
 			XPUSHs(sv_2mortal(newSVpv((char *) &ntype, 4)));
 		} else {
-			OSType ntype = ntohl(type);
-			OSType ncreator = ntohl(creator);
+			OSType ntype = htonl(type);
+			OSType ncreator = htonl(creator);
 
 			XPUSHs(sv_2mortal(newSVpv((char *) &ncreator, 4)));
 			XPUSHs(sv_2mortal(newSVpv((char *) &ntype, 4)));
