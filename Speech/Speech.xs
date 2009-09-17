@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Speech/Speech.xs,v 1.5 2006/07/07 06:40:26 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Speech/Speech.xs,v 1.6 2009/09/17 06:57:18 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,26 @@
  *    as specified in the README file.
  *
  * $Log: Speech.xs,v $
+ * Revision 1.6  2009/09/17 06:57:18  pudge
+ * Bunch of fixes and changes for release
+ *   Add notes for 64-bit perl
+ *
+ *   Bump all the version numbers
+ *
+ *   Fix a bunch of tests (nothing major, just make them work better)
+ *
+ *   Fix sound-env-var checking code for tests (no more sound tests
+ *   unless you ask for them with MAC_CARBON_SOUND, which was in the
+ *   last version, but the logic was broken)
+ *
+ *   Make CFStringRef typemap better
+ *
+ *   Remove high-bit characters from source files
+ *
+ *   Add new system version gestalt constants
+ *
+ *   Fix leaks in Mac::Processes and Mac::Speech
+ *
  * Revision 1.5  2006/07/07 06:40:26  pudge
  * Add SpeechToFile
  *
@@ -448,9 +468,9 @@ SpeechToFile(chan, path)
 #endif
 			false
 		);
-
 		RETVAL = SetSpeechInfo(chan, soOutputToFileWithCFURL, cfurlr);
-
+		CFRelease(path);
+		CFRelease(cfurlr);
 	}
 	OUTPUT:
 	RETVAL

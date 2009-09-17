@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.15 2006/07/07 06:40:50 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Carbon/Carbon.h,v 1.16 2009/09/17 07:02:50 pudge Exp $
  *
  *    Copyright (c) 2002 Matthias Neeracher, Chris Nandor
  *
@@ -6,6 +6,26 @@
  *    as specified in the README file.
  *
  * $Log: Carbon.h,v $
+ * Revision 1.16  2009/09/17 07:02:50  pudge
+ * Bunch of fixes and changes for release
+ *   Add notes for 64-bit perl
+ *
+ *   Bump all the version numbers
+ *
+ *   Fix a bunch of tests (nothing major, just make them work better)
+ *
+ *   Fix sound-env-var checking code for tests (no more sound tests
+ *   unless you ask for them with MAC_CARBON_SOUND, which was in the
+ *   last version, but the logic was broken)
+ *
+ *   Make CFStringRef typemap better
+ *
+ *   Remove high-bit characters from source files
+ *
+ *   Add new system version gestalt constants
+ *
+ *   Fix leaks in Mac::Processes and Mac::Speech
+ *
  * Revision 1.15  2006/07/07 06:40:50  pudge
  * More endian fixes
  *
@@ -112,8 +132,8 @@ static StringPtr MacPerl_CopyC2P(const char * c, StringPtr p)
 static bool ReadHex(const char * path, int bytes, char * result) 
 {
 	char hexbyte[3];
-	hexbyte[2] = 0;
 	int i, j;
+	hexbyte[2] = 0;
 
 	for (i = 0; i < bytes; i++) {
 		hexbyte[0] = *path++; hexbyte[1] = *path++;

@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/OSA/OSA.xs,v 1.7 2005/05/15 04:53:25 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/OSA/OSA.xs,v 1.8 2009/09/17 06:55:57 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,26 @@
  *    as specified in the README file.
  *
  * $Log: OSA.xs,v $
+ * Revision 1.8  2009/09/17 06:55:57  pudge
+ * Bunch of fixes and changes for release
+ *   Add notes for 64-bit perl
+ *
+ *   Bump all the version numbers
+ *
+ *   Fix a bunch of tests (nothing major, just make them work better)
+ *
+ *   Fix sound-env-var checking code for tests (no more sound tests
+ *   unless you ask for them with MAC_CARBON_SOUND, which was in the
+ *   last version, but the logic was broken)
+ *
+ *   Make CFStringRef typemap better
+ *
+ *   Remove high-bit characters from source files
+ *
+ *   Add new system version gestalt constants
+ *
+ *   Fix leaks in Mac::Processes and Mac::Speech
+ *
  * Revision 1.7  2005/05/15 04:53:25  pudge
  * Add OSAGetAppTerminology to Mac::OSA
  *
@@ -315,7 +335,7 @@ You can pass a descriptor record containing source data suitable for a specific
 scripting component (usually text) to the OSACompile function to obtain a script
 ID for the equivalent compiled script or script context. To compile the source
 data as a script context for use with OSAExecuteEvent() or OSADoEvent(), you must set
-the kOSACompileIntoContext flag, and the source data should include appropriate
+the kOSAModeCompileIntoContext flag, and the source data should include appropriate
 handlers.
 Return zero if no error was detected.
 

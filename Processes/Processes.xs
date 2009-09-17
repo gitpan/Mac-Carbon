@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.10 2006/06/20 01:39:18 pudge Exp $
+/* $Header: /cvsroot/macperl/perl/macos/ext/Mac/Processes/Processes.xs,v 1.11 2009/09/17 06:56:08 pudge Exp $
  *
  *    Copyright (c) 1996 Matthias Neeracher
  *
@@ -6,6 +6,26 @@
  *    as specified in the README file.
  *
  * $Log: Processes.xs,v $
+ * Revision 1.11  2009/09/17 06:56:08  pudge
+ * Bunch of fixes and changes for release
+ *   Add notes for 64-bit perl
+ *
+ *   Bump all the version numbers
+ *
+ *   Fix a bunch of tests (nothing major, just make them work better)
+ *
+ *   Fix sound-env-var checking code for tests (no more sound tests
+ *   unless you ask for them with MAC_CARBON_SOUND, which was in the
+ *   last version, but the logic was broken)
+ *
+ *   Make CFStringRef typemap better
+ *
+ *   Remove high-bit characters from source files
+ *
+ *   Add new system version gestalt constants
+ *
+ *   Fix leaks in Mac::Processes and Mac::Speech
+ *
  * Revision 1.10  2006/06/20 01:39:18  pudge
  * Loads of fixes, mostly for Intel port
  *
@@ -442,9 +462,13 @@ LSFindApplicationForInfo(creator, bundleID=NULL, name=NULL)
 #ifdef MACOS_TRADITIONAL
 	croak("Usage: Mac::Processes::LSFindApplicationForInfo unsupported in Mac OS");
 #else
-	if (gMacPerl_OSErr = LSFindApplicationForInfo(creator, bundleID, name, &RETVAL, NULL)) {
+	gMacPerl_OSErr = LSFindApplicationForInfo(creator, bundleID, name, &RETVAL, NULL);
+	if (bundleID)
+		CFRelease(bundleID);
+	if (name)
+		CFRelease(name);
+	if (gMacPerl_OSErr)
 		XSRETURN_UNDEF;
-	}
 #endif
 	OUTPUT:
 	RETVAL
