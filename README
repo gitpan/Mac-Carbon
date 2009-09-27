@@ -21,7 +21,8 @@ bugs, etc.
 =head1 64-BIT NOTICE
 
 Mac::Carbon does not run under 64-bit perl. There are workarounds listed
-in L<Mac::Carbon/"64-BIT PERL">.
+in L<Mac::Carbon/"64-BIT PERL">.  It does build with a "fat" 64-bit perl,
+for use with 32-bit mode.
 
 
 =head1 HELP ME
@@ -148,4 +149,4 @@ Nandor E<lt>pudge@pobox.comE<gt>.
 
 =head1 VERSION
 
-$Id: README,v 1.14 2009/09/17 07:02:50 pudge Exp $
+$Id: README,v 1.15 2009/09/27 01:22:36 pudge Exp $
